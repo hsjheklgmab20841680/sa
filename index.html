@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ülkeler & Başkentleri</title>
+  <style>
+    :root {
+      --bg-page: #f5f7ff;
+      --bg-card: #ffffff;
+      --bg-subtle: #f1f4ff;
+      --bg-header: #ffffff;
+      --text-main: #181c32;
+      --text-muted: #6e7694;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-soft: rgba(79, 70, 229, 0.1);
+      --border: #e4e8f5;
+      --border-input: #4f46e5;
+      --danger: #ef4444;
+      --success: #16a34a;
+      --shadow: 0 12px 32px rgba(24, 28, 50, 0.06);
+    }
+
+    body.dark {
+      --bg-page: #0f1322;
+      --bg-card: #181e34;
+      --bg-subtle: #202844;
+      --bg-header: #151a2e;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #6366f1;
+      --primary-hover: #818cf8;
+      --primary-soft: rgba(99, 102, 241, 0.18);
+      --border: #283152;
+      --border-input: #6366f1;
+      --danger: #f87171;
+      --success: #4ade80;
+      --shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .topbar {
+      background: var(--bg-header);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .brand-sub {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      padding: 9px 15px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background: var(--bg-subtle);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: transparent;
+      width: 100%;
+      justify-content: center;
+      padding: 14px 20px;
+      font-size: 15px;
+      border-radius: 12px;
+      margin-top: 16px;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .main-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 18px 16px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 680px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 28px 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .lives-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .hearts {
+      display: flex;
+      gap: 5px;
+      font-size: 17px;
+      color: var(--danger);
+    }
+
+    .heart.lost {
+      opacity: 0.22;
+      filter: grayscale(1);
+    }
+
+    .right-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mode-switch {
+      display: inline-flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+    }
+
+    .mode-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      padding: 5px 11px;
+      border-radius: 7px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .mode-btn.active {
+      background: var(--bg-card);
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .counter-pill {
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 5px;
+      background: var(--bg-subtle);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      transition: width 0.25s ease;
+    }
+
+    .prompt-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 20px;
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .prompt-tag {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .country-name {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .prompt-hint {
+      font-size: 13.5px;
+      color: var(--text-muted);
+    }
+
+    .input-label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .answer-input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 15.5px;
+      color: var(--text-main);
+      background: var(--bg-card);
+      border: 2px solid var(--border-input);
+      border-radius: 12px;
+      outline: none;
+    }
+
+    .answer-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .feedback {
+      margin-top: 12px;
+      min-height: 22px;
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    .feedback.ok {
+      color: var(--success);
+    }
+
+    .feedback.err {
+      color: var(--danger);
+    }
+
+    .stats-row {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .stat-ok strong {
+      color: var(--success);
+    }
+
+    .stat-err strong {
+      color: var(--danger);
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 18px 16px 24px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 14, 28, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 50;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 540px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .modal h2 {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .modal p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .modal textarea {
+      width: 100%;
+      height: 220px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      font-size: 13.5px;
+      line-height: 1.5;
+      resize: vertical;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .summary-box {
+      text-align: center;
+      padding: 12px 0 4px;
+    }
+
+    .summary-box h2 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .summary-box p {
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">🌐</div>
+      <div>
+        <div class="brand-title">Ülkeler &amp; Başkentleri</div>
+        <div class="brand-sub" id="listSubtitle">Varsayılan Dünya Listesi (45 ülke)</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" type="button" id="themeBtn" onclick="toggleTheme()">🌙 Koyu Mod</button>
+      <button class="btn" type="button" onclick="openEditor()">+ Listeyi Düzenle</button>
+      <button class="btn" type="button" onclick="resetGame()">↻ Yeniden Başla</button>
+    </div>
+  </header>
+
+  <main class="main-wrap">
+    <section class="card" id="gameCard">
+      <div class="card-top">
+        <div class="lives-box">
+          <span>CAN</span>
+          <div class="hearts" id="heartsBox"></div>
+        </div>
+
+        <div class="right-controls">
+          <div class="mode-switch">
+            <button class="mode-btn active" id="seqBtn" type="button" onclick="setMode('seq')">Sıralı</button>
+            <button class="mode-btn" id="shufBtn" type="button" onclick="setMode('shuffle')">Karışık</button>
+          </div>
+          <div class="counter-pill" id="counterPill">1 / 45</div>
+        </div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div id="playArea">
+        <div class="prompt-box">
+          <div class="prompt-tag">ÜLKE</div>
+          <div class="country-name" id="countryName">Türkiye</div>
+          <div class="prompt-hint">Bu ülkenin başkentini aşağıya yazın</div>
+        </div>
+
+        <label class="input-label" for="answerInput">Başkent</label>
+        <input
+          class="answer-input"
+          id="answerInput"
+          type="text"
+          placeholder="Başkenti yazın..."
+          autocomplete="off"
+        />
+
+        <div class="feedback" id="feedback"></div>
+
+        <button class="btn btn-primary" id="checkBtn" type="button" onclick="checkAnswer()">
+          Kontrol Et →
+        </button>
+      </div>
+
+      <div class="summary-box" id="summaryArea" style="display: none;">
+        <h2 id="summaryTitle">Test Tamamlandı</h2>
+        <p id="summaryText"></p>
+        <button class="btn btn-primary" type="button" onclick="resetGame()">Tekrar Başla →</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-ok">Doğru: <strong id="correctCount">0</strong></div>
+        <div class="stat-err">Yanlış / Boş: <strong id="wrongCount">0</strong></div>
+        <div>Enter tuşu ile gönderebilirsiniz</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-note">
+    Türkçe karakter duyarsız kontrol (İ/I, Ş/S, Ğ/G, Ü/U, Ö/O, Ç/C) ve birden fazla geçerli başkent yazımı desteklenir.
+  </footer>
+
+  <div class="modal-backdrop" id="editorModal">
+    <div class="modal">
+      <h2>Ülke &amp; Başkent Listesini Düzenle</h2>
+      <p>Her satıra <strong>Ülke - Başkent</strong> yazın. Birden fazla geçerli başkent için virgül kullanabilirsiniz (ör. <em>Rusya - Moskova, Moscow</em>).</p>
+      <textarea id="listTextarea"></textarea>
+      <div class="modal-actions">
+        <button class="btn" type="button" onclick="closeEditor()">İptal</button>
+        <button class="btn" type="button" onclick="restoreDefaultList()">Varsayılan Liste</button>
+        <button class="btn" type="button" style="background: var(--primary); color: #fff; border-color: transparent;" onclick="saveCustomList()">Kaydet ve Başlat</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_ITEMS = [
+      { country: "Türkiye", capitals: ["Ankara"] },
+      { country: "Almanya", capitals: ["Berlin"] },
+      { country: "Fransa", capitals: ["Paris"] },
+      { country: "İngiltere", capitals: ["Londra", "London"] },
+      { country: "İtalya", capitals: ["Roma", "Rome"] },
+      { country: "İspanya", capitals: ["Madrid"] },
+      { country: "Portekiz", capitals: ["Lizbon", "Lisbon"] },
+      { country: "Yunanistan", capitals: ["Atina", "Athens"] },
+      { country: "Hollanda", capitals: ["Amsterdam"] },
+      { country: "Belçika", capitals: ["Brüksel", "Brussels"] },
+      { country: "İsviçre", capitals: ["Bern"] },
+      { country: "Avusturya", capitals: ["Viyana", "Vienna"] },
+      { country: "Polonya", capitals: ["Varşova", "Warsaw"] },
+      { country: "Rusya", capitals: ["Moskova", "Moscow"] },
+      { country: "Ukrayna", capitals: ["Kiev", "Kyiv"] },
+      { country: "Norveç", capitals: ["Oslo"] },
+      { country: "İsveç", capitals: ["Stokholm", "Stockholm"] },
+      { country: "Finlandiya", capitals: ["Helsinki"] },
+      { country: "Danimarka", capitals: ["Kopenhag", "Copenhagen"] },
+      { country: "İrlanda", capitals: ["Dublin"] },
+      { country: "Çekya", capitals: ["Prag", "Prague"] },
+      { country: "Macaristan", capitals: ["Budapeşte", "Budapest"] },
+      { country: "Romanya", capitals: ["Bükreş", "Bucharest"] },
+      { country: "Bulgaristan", capitals: ["Sofya", "Sofia"] },
+      { country: "Hırvatistan", capitals: ["Zagreb"] },
+      { country: "Sırbistan", capitals: ["Belgrad", "Belgrade"] },
+      { country: "ABD", capitals: ["Washington", "Washington DC", "Washington D.C."] },
+      { country: "Kanada", capitals: ["Ottava", "Ottawa"] },
+      { country: "Meksika", capitals: ["Meksiko", "Mexico City"] },
+      { country: "Brezilya", capitals: ["Brasilia", "Brazilya"] },
+      { country: "Arjantin", capitals: ["Buenos Aires"] },
+      { country: "Şili", capitals: ["Santiago"] },
+      { country: "Japonya", capitals: ["Tokyo"] },
+      { country: "Güney Kore", capitals: ["Seul", "Seoul"] },
+      { country: "Çin", capitals: ["Pekin", "Beijing"] },
+      { country: "Hindistan", capitals: ["Yeni Delhi", "New Delhi"] },
+      { country: "Azerbaycan", capitals: ["Bakü", "Baku"] },
+      { country: "Gürcistan", capitals: ["Tiflis", "Tbilisi"] },
+      { country: "İran", capitals: ["Tahran", "Tehran"] },
+      { country: "Mısır", capitals: ["Kahire", "Cairo"] },
+      { country: "Suudi Arabistan", capitals: ["Riyad", "Riyadh"] },
+      { country: "Birleşik Arap Emirlikleri", capitals: ["Abu Dabi", "Abu Dhabi"] },
+      { country: "Güney Afrika", capitals: ["Pretoria", "Cape Town", "Bloemfontein"] },
+      { country: "Avustralya", capitals: ["Kanberra", "Canberra"] },
+      { country: "Yeni Zelanda", capitals: ["Wellington"] }
+    ];
+
+    const MAX_LIVES = 5;
+    let listLabel = "Varsayılan Dünya Listesi";
+    let baseItems = [...DEFAULT_ITEMS];
+    let queue = [];
+    let index = 0;
+    let lives = MAX_LIVES;
+    let correct = 0;
+    let wrong = 0;
+    let mode = "seq";
+    let locked = false;
+
+    function normalizeText(str) {
+      return (str || "")
+        .trim()
+        .toLowerCase()
+        .replace(/ı/g, "i")
+        .replace(/İ/g, "i")
+        .replace(/ş/g, "s")
+        .replace(/ğ/g, "g")
+        .replace(/ü/g, "u")
+        .replace(/ö/g, "o")
+        .replace(/ç/g, "c")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9\s]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function applyTheme(dark) {
+      document.body.classList.toggle("dark", dark);
+      localStorage.setItem("ulkeler_dark_mode", dark ? "1" : "0");
+      document.getElementById("themeBtn").textContent = dark ? "☀️ Açık Mod" : "🌙 Koyu Mod";
+    }
+
+    function toggleTheme() {
+      applyTheme(!document.body.classList.contains("dark"));
+    }
+
+    function setMode(nextMode) {
+      mode = nextMode;
+      document.getElementById("seqBtn").classList.toggle("active", mode === "seq");
+      document.getElementById("shufBtn").classList.toggle("active", mode === "shuffle");
+      resetGame();
+    }
+
+    function buildQueue() {
+      const arr = [...baseItems];
+      if (mode === "shuffle") {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+      }
+      return arr;
+    }
+
+    function renderHearts() {
+      const box = document.getElementById("heartsBox");
+      box.innerHTML = "";
+      for (let i = 0; i < MAX_LIVES; i++) {
+        const span = document.createElement("span");
+        span.className = "heart" + (i >= lives ? " lost" : "");
+        span.textContent = "♥";
+        box.appendChild(span);
+      }
+    }
+
+    function renderQuestion() {
+      document.getElementById("listSubtitle").textContent = `${listLabel} (${baseItems.length} ülke)`;
+      renderHearts();
+      document.getElementById("correctCount").textContent = correct;
+      document.getElementById("wrongCount").textContent = wrong;
+
+      if (lives <= 0 || index >= queue.length) {
+        showSummary();
+        return;
+      }
+
+      document.getElementById("playArea").style.display = "block";
+      document.getElementById("summaryArea").style.display = "none";
+
+      const current = queue[index];
+      document.getElementById("counterPill").textContent = `${index + 1} / ${queue.length}`;
+      document.getElementById("progressFill").style.width = `${(index / queue.length) * 100}%`;
+      document.getElementById("countryName").textContent = current.country;
+      document.getElementById("feedback").textContent = "";
+      document.getElementById("feedback").className = "feedback";
+
+      const input = document.getElementById("answerInput");
+      input.value = "";
+      input.disabled = false;
+      input.focus();
+      locked = false;
+    }
+
+    function checkAnswer() {
+      if (locked || lives <= 0 || index >= queue.length) return;
+      locked = true;
+
+      const input = document.getElementById("answerInput");
+      const userNorm = normalizeText(input.value);
+      const current = queue[index];
+      const validNorms = current.capitals.map(normalizeText);
+      const fb = document.getElementById("feedback");
+
+      if (userNorm && validNorms.includes(userNorm)) {
+        correct++;
+        fb.textContent = `Doğru! ${current.country} başkent(ler)i: ${current.capitals.join(" / ")}`;
+        fb.className = "feedback ok";
+      } else {
+        lives--;
+        wrong++;
+        fb.textContent = userNorm
+          ? `Yanlış! Doğru cevap: ${current.capitals.join(" / ")}`
+          : `Boş bırakıldı! Doğru cevap: ${current.capitals.join(" / ")}`;
+        fb.className = "feedback err";
+        renderHearts();
+      }
+
+      document.getElementById("correctCount").textContent = correct;
+      document.getElementById("wrongCount").textContent = wrong;
+      input.disabled = true;
+
+      setTimeout(() => {
+        index++;
+        renderQuestion();
+      }, 950);
+    }
+
+    function showSummary() {
+      document.getElementById("progressFill").style.width = "100%";
+      document.getElementById("playArea").style.display = "none";
+      document.getElementById("summaryArea").style.display = "block";
+
+      const outOfLives = lives <= 0;
+      document.getElementById("summaryTitle").textContent = outOfLives
+        ? "Canların Bitti"
+        : "Tüm Ülkeler Tamamlandı";
+      document.getElementById("summaryText").textContent =
+        `${correct} doğru, ${wrong} yanlış/boş yaptın (Kalan can: ${Math.max(0, lives)}/${MAX_LIVES}).`;
+    }
+
+    function resetGame() {
+      lives = MAX_LIVES;
+      correct = 0;
+      wrong = 0;
+      index = 0;
+      queue = buildQueue();
+      renderQuestion();
+    }
+
+    function openEditor() {
+      const lines = baseItems.map((item) => `${item.country} - ${item.capitals.join(", ")}`);
+      document.getElementById("listTextarea").value = lines.join("\n");
+      document.getElementById("editorModal").classList.add("open");
+    }
+
+    function closeEditor() {
+      document.getElementById("editorModal").classList.remove("open");
+    }
+
+    function restoreDefaultList() {
+      baseItems = [...DEFAULT_ITEMS];
+      listLabel = "Varsayılan Dünya Listesi";
+      localStorage.removeItem("ulkeler_custom_items");
+      closeEditor();
+      resetGame();
+    }
+
+    function saveCustomList() {
+      const raw = document.getElementById("listTextarea").value.split("\n");
+      const parsed = [];
+
+      for (const line of raw) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        const parts = trimmed.split(/\s*-\s*|\s*:\s*/);
+        if (parts.length < 2) continue;
+        const country = parts[0].trim();
+        const capitals = parts.slice(1).join("-").split(",").map((c) => c.trim()).filter(Boolean);
+        if (country && capitals.length > 0) {
+          parsed.push({ country, capitals });
+        }
+      }
+
+      if (parsed.length === 0) {
+        alert("En az 1 geçerli 'Ülke - Başkent' satırı girmelisiniz.");
+        return;
+      }
+
+      baseItems = parsed;
+      listLabel = "Özel Liste";
+      localStorage.setItem("ulkeler_custom_items", JSON.stringify(parsed));
+      closeEditor();
+      resetGame();
+    }
+
+    document.getElementById("answerInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        checkAnswer();
+      }
+    });
+
+    (function init() {
+      applyTheme(localStorage.getItem("ulkeler_dark_mode") === "1");
+      const saved = localStorage.getItem("ulkeler_custom_items");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            baseItems = parsed;
+            listLabel = "Özel Liste";
+          }
+        } catch (_) {}
+      }
+      resetGame();
+    })();
+  </script>
+</body>
+</html>
